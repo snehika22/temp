@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script>
+        let users=[]
         function showData()
         {
             //alert("Hello World")
@@ -13,7 +14,21 @@
             let password=document.getElementById("password").value
             let dob=document.getElementById("dob").value
            // data.innerHTML=name + "  |  " + email +"  |  "+ password +"  |   "+dob
-           data.innerHTML=`${name} <br> ${email}<br> ${password}<br>${dob}`
+           //data.innerHTML=`${name} <br> ${email}<br> ${password}<br>${dob}`
+           let user={
+            name:name,
+            email:email,
+            password:password,
+            dob:dob
+           }
+           users.push(user)
+           console.log(users)
+           let str=""
+           for(let i=0;i<length;i++){
+            str=str+`<li>${users[i].name}-${users[i].email}-${users[i].password}-${users[i].dob}</li>`
+           }
+          data.innerHTML=str
+          //data.innerHTML=`${name},${email},${password},${dob}`
         }            
     </script>
 </head>
@@ -22,7 +37,7 @@
     <p><input type="text" id="name" placeholder="Enter Name"></p>
     <p><input type="text" id="email" placeholder="Enter Email Address"></p>
     <p><input type="password" id="password" placeholder="Enter Password"></p>
-    <p><input type="datetime-local" id="dob" placeholder="Enter DOB"></p>
+    <p><input type="date" id="dob" placeholder="Enter DOB"></p>
     <button onclick="showData()">Register</button>
     <hr />
     <div id="data"></div>

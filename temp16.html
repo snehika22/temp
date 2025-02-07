@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function showform(){
+            let str1=`
+                <h1>Registration Form<h1>
+                    <p><input type='text' placeholder="Enter name" ></p>
+                    <p><input type='email' placeholder="Enter email" ></p>
+                    <p><input type="date" placeholder="Enter dob" ></p>
+                    <p><input type="age" placeholder="Enter age" ></p>
+                    <button>Register</button>
+                    <p><button onclick="show()">Back to Login</button></p>
+            `
+                root.innerHTML=str1
+            }
+        function show(){
+            let str=`
+            <div>
+                <h2>Login Form</h2>
+                <p><input type="text"></p>
+                <p><input type="password"></p>
+                <button>Log In</button>
+                <p><button onclick="showform()">Create Account</button></p>
+            </div>
+            `
+            root.innerHTML=str;
+        }
+       
+    </script>
+</head>
+<body onload="show()">
+    <div id="root"></div>
+</body>
+</html>
