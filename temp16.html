@@ -3,58 +3,181 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>HDFC Bank</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        background-color: #2c3e50;
+        color: white;
+        padding: 15px;
+        margin: 0;
+      }
+      #root {
+        background: white;
+        width: 350px;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+      input, select, button {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+      }
+      button {
+        background-color: #3498db;
+        color: white;
+        cursor: pointer;
+        border: none;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      .logout {
+        background-color: #e74c3c;
+      }
+      .logout:hover {
+        background-color: #c0392b;
+      }
+      #msg {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
     <script>
       let users = [];
-      let useremail = ""
-      let username = ""
-      let currBalance = 0
+      let useremail = "";
+      let username = "";
+      let currBalance = 0;
+
+      function saveDate() {
+        let amount = parseFloat(document.getElementById("amount").value);
+        let type = document.getElementById("type").value;
+
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].email === useremail) {
+            if (type == 1) {
+              users[i].balance += amount;
+            } else if (type == 2) {
+              if (users[i].balance >= amount) {
+                users[i].balance -= amount;
+              } else {
+                alert("Insufficient balance!");
+                return;
+              }
+            }
+            currBalance = users[i].balance;
+            break;
+          }
+        }
+        home();
+      }
+
+      function transferMoney() {
+        let receiverEmail = document.getElementById("transferEmail").value;
+        let amount = parseFloat(document.getElementById("transferAmount").value);
+
+        if (receiverEmail === useremail) {
+          alert("You cannot transfer money to yourself!");
+          return;
+        }
+
+        let sender = users.find(user => user.email === useremail);
+        let receiver = users.find(user => user.email === receiverEmail);
+
+        if (!receiver) {
+          alert("Receiver email not found!");
+          return;
+        }
+
+        if (sender.balance < amount) {
+          alert("Insufficient balance!");
+          return;
+        }
+
+        sender.balance -= amount;
+        receiver.balance += amount;
+        currBalance = sender.balance;
+
+        alert(`₹${amount} successfully transferred to ${receiverEmail}!`);
+        home();
+      }
+
       function home() {
         let str = `
-            <h2>Welcome ${username}</h2>
-            <button onclick='showLogin()'>Logout</button>
+            <h2>Welcome, ${username}!</h2>
+            <button class="logout" onclick='showLogin()'>Logout</button>
+            
+            <h3>Deposit / Withdraw</h3>
             <p><input type="number" id="amount" placeholder="Enter Amount"></p>
             <p><select id="type">
                <option value=0>--Select--</option>
                <option value=1>Deposit</option>
                <option value=2>Withdraw</option>
                </select></p>
-               <button>Submit</button>
-               <p>Current Balance: ${currBalance}</p>
+            <button onclick="saveDate()">Submit</button>
 
+            <h3>Transfer Money</h3>
+            <p><input type="text" id="transferEmail" placeholder="Enter Receiver's Email"></p>
+            <p><input type="number" id="transferAmount" placeholder="Enter Amount"></p>
+            <button onclick="transferMoney()">Transfer</button>
+
+            <h3>Current Balance: ₹${currBalance.toFixed(2)}</h3>
             `;
-        root.innerHTML = str;
+        document.getElementById("root").innerHTML = str;
       }
+
       function addUser() {
         let name = document.getElementById("name").value;
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
         let dob = document.getElementById("dob").value;
+
         let user = {
           name: name,
           email: email,
           password: password,
           dob: dob,
-          balance:0
+          balance: 0
         };
+
         users.push(user);
         showLogin();
       }
+
       function chkUser() {
         let email = document.getElementById("email").value;
         let password = document.getElementById("password").value;
+        let msg = document.getElementById("msg");
+
+        let userFound = false;
+
         for (let i = 0; i < users.length; i++) {
-          if (users[i].email == email && users[i].password == password) {
-            useremail = email
-            username = users[i].name
-            currBalance =  users[i].balance
+          if (users[i].email === email && users[i].password === password) {
+            useremail = email;
+            username = users[i].name;
+            currBalance = users[i].balance;
             home();
+            userFound = true;
             break;
-          } else {
-            msg.innerHTML = "Access Denied";
           }
         }
+
+        if (!userFound) {
+          msg.innerHTML = "Access Denied";
+        }
       }
+
       function showForm() {
         let str = `
         <h2>Registration Form</h2>
@@ -65,27 +188,26 @@
         <p><button onclick='addUser()'>Submit</button></p>
         <p>Already a member?<button onclick='showLogin()'>Login Here</button></p>
         `;
-        root.innerHTML = str;
+        document.getElementById("root").innerHTML = str;
       }
+
       function showLogin() {
         let str = `
         <div>
             <h2>Login Form</h2>
             <div id='msg'></div>
-            <p><input id="email" type="text"></p>
-            <p><input id="password" type="password"></p>
+            <p><input id="email" type="text" placeholder="Email"></p>
+            <p><input id="password" type="password" placeholder="Password"></p>
             <button onclick='chkUser()'>Log In</button>
             <p><button onclick='showForm()'>Create Account</button></p>
         </div>
         `;
-        root.innerHTML = str;
+        document.getElementById("root").innerHTML = str;
       }
     </script>
   </head>
   <body onload="showLogin()">
     <h1>HDFC Bank</h1>
-    <hr>
     <div id="root"></div>
-    <hr>
   </body>
 </html>
