@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball and Bucket Game</title>
+</head>
+<body>
+    <img src="assets/images/ball.png" width="100px" id="ball">
+    <img src="assets/images/bucket.png" width="100px" id="bucket"/>
+    <h1 id="score">Score: 0</h1>
+    <script>
+        const bucket = document.getElementById("bucket");
+        const ball = document.getElementById("ball");
+        const scoreDisplay = document.getElementById("score");
+
+        bucket.style.position = "absolute";
+        ball.style.position = "absolute";
+
+        let b = document.body;
+        let left = 0;
+        let down = 400;
+        let score = 0;
+
+        bucket.style.left = left + "px";
+        bucket.style.top = down + "px";
+
+        // Move bucket using arrow keys
+        b.onkeydown = (e) => {
+            if (e.key == "ArrowRight") left += 5;
+            if (e.key == "ArrowDown") down += 5;
+            if (e.key == "ArrowLeft") left -= 5;
+            if (e.key == "ArrowUp") down -= 5;
+
+            bucket.style.left = left + "px";
+            bucket.style.top = down + "px";
+        };
+        let t = 0;
+        let l = 0;
+
+        function ballFall() {
+            t++;
+            if (t > 400) { 
+                t = 1; // Reset ball position
+                l = Math.random() * 500; // Randomize ball's horizontal position
+            }
+            ball.style.top = t + "px";
+            ball.style.left = l + "px";
+
+            // Check for collision
+            const ballRect = ball.getBoundingClientRect();
+            const bucketRect = bucket.getBoundingClientRect();
+
+            if (
+                ballRect.left < bucketRect.right &&
+                ballRect.right > bucketRect.left &&
+                ballRect.top < bucketRect.bottom &&
+                ballRect.bottom > bucketRect.top
+            ) {
+                score++; // Increment score
+                scoreDisplay.innerText = "Score: " + score;
+                t = 1; // Reset ball position
+                l = Math.random() * 500; // Randomize ball's position
+            }
+
+            setTimeout(ballFall, 10); // Continue animation
+        }
+
+        ballFall();
+    </script>
+</body>
+</html>
